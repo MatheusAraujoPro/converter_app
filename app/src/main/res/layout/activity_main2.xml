@@ -19,6 +19,15 @@
         android:textSize="32sp"
         android:text="Aguardando" />
 
+    <TextView
+        android:id="@+id/text_medida"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:gravity="center"
+        android:textSize="18sp"
+        android:text="Quilômetros" />
+
     <Button
         android:id="@+id/button_voltar"
         android:layout_marginTop="18dp"

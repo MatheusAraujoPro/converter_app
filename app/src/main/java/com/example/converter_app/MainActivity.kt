@@ -14,6 +14,7 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, Vi
     private lateinit var buttonConverter: Button
     private lateinit var buttonLimpar: Button
     private var positionSelected = 0
+    private var measure = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,6 +56,7 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, Vi
                 if (!edit.text.toString().isEmpty()) {
                     var inputValue = edit.text.toString()
                     calculate = inputValue.toDouble() * 1000
+                    measure = "Metros"
                 }
 
             }
@@ -64,6 +66,7 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, Vi
                 if (!edit.text.toString().isEmpty()) {
                     var inputValue = edit.text.toString()
                     calculate = inputValue.toDouble() * 100000
+                    measure = "Centímetros"
                 }
 
             }
@@ -72,6 +75,7 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, Vi
                 if (!edit.text.toString().isEmpty()) {
                     var inputValue = edit.text.toString()
                     calculate = inputValue.toDouble() / 1000
+                    measure = "Quilômetros"
                 }
             }
         }
@@ -104,6 +108,7 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, Vi
 
             val intent = Intent(this, MainActivity2::class.java)
             intent.putExtra("calculo", calculate)
+            intent.putExtra("medida", measure )
             startActivity(intent)
 
         } else {

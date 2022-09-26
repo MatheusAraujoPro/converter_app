@@ -6,19 +6,23 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 
 class MainActivity2 : AppCompatActivity() {
-    private lateinit var textView: TextView
+    private lateinit var textResult: TextView
+    private lateinit var textMeasure: TextView
     private lateinit var buttonVoltar: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main2)
 
-        textView = findViewById(R.id.text_result)
+        textResult = findViewById(R.id.text_result)
+        textMeasure = findViewById(R.id.text_medida)
         buttonVoltar = findViewById(R.id.button_voltar)
 
         //Recebendo valor da intent
         val calculate = intent.getDoubleExtra("calculo", 1.0)
-        textView.text = calculate.toString()
+
+        textResult.text = calculate.toString()
+        textMeasure.text = intent.getStringExtra("medida")
 
         buttonVoltar.setOnClickListener {
             finish()
