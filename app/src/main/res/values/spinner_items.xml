@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string-array name="option_to_converter">
+      <item>Selecione uma das opções</item>
+      <item>Quilometros para metros</item>
+      <item>Quilometros para centimetros</item>
+      <item>Metros para quilometros</item>
+  </string-array>
+</resources>

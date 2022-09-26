@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">converter_app</string>
+    <string name="value_input">Digite o valor desejado</string>
+    <string name="btn_converter">Conveter</string>
+    <string name="btn_limpar">Limpar</string>
+    <string name="btn_back">voltar</string>
+</resources>

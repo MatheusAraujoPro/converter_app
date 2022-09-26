@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="spinner">
+        <item name="android:paddingLeft">0dp</item>
+        <item name="android:dropDownWidth">match_parent</item>
+        <item name="android:showDividers">none</item>
+        <item name="android:dividerHeight">0dp</item>
+        <item name="android:dropDownHeight">70dp</item>
+    </style>
+</resources>
