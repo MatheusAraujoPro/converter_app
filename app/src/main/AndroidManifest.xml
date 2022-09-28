@@ -13,7 +13,7 @@
         android:theme="@style/Theme.Converter_app"
         tools:targetApi="31">
         <activity
-            android:name=".MainActivity2"
+            android:name=".ResultActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"

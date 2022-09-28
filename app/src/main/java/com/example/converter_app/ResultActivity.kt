@@ -5,14 +5,14 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 
-class MainActivity2 : AppCompatActivity() {
+class ResultActivity : AppCompatActivity() {
     private lateinit var textResult: TextView
     private lateinit var textMeasure: TextView
     private lateinit var buttonVoltar: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main2)
+        setContentView(R.layout.activity_reuslt)
 
         textResult = findViewById(R.id.text_result)
         textMeasure = findViewById(R.id.text_medida)

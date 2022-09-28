@@ -5,16 +5,17 @@ import android.os.Bundle
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import com.example.converter_app.models.Contantes
+import com.example.converter_app.models.*
 
 class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, View.OnClickListener {
     private lateinit var spinner: Spinner
     private lateinit var edit: EditText
-    private var calculate: Double = 0.0
     private lateinit var buttonConverter: Button
     private lateinit var buttonLimpar: Button
+
     private var positionSelected = 0
-    private var measure = ""
+    private lateinit var conversorStrategy: ConversorDeMedidasStrategy
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,31 +53,16 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, Vi
         when (item) {
 
             Contantes.KM_PARA_METROS -> {
-                //Chamar um método
-                if (!edit.text.toString().isEmpty()) {
-                    var inputValue = edit.text.toString()
-                    calculate = inputValue.toDouble() * 1000
-                    measure = "Metros"
-                }
-
+                conversorStrategy = ConversorDeKmParaMetros()
             }
 
             Contantes.KM_POR_CENTIMETROS -> {
-                //Chamar um método
-                if (!edit.text.toString().isEmpty()) {
-                    var inputValue = edit.text.toString()
-                    calculate = inputValue.toDouble() * 100000
-                    measure = "Centímetros"
-                }
+                conversorStrategy = ConversorDeKmParaCentimetros()
 
             }
 
             Contantes.METROS_PARA_KM -> {
-                if (!edit.text.toString().isEmpty()) {
-                    var inputValue = edit.text.toString()
-                    calculate = inputValue.toDouble() / 1000
-                    measure = "Quilômetros"
-                }
+                conversorStrategy = ConversorDeMetrosParaKM()
             }
         }
     }
@@ -105,10 +91,17 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, Vi
                 return
             }
 
+            //Lógica da conversão
+            val conversor = ConversorDeMedidas(conversorStrategy)
+            val textValue = edit.text.toString()
+            val result = conversor.converter(textValue.toDouble())
+            val measure = conversor.getLabel(result)
 
-            val intent = Intent(this, MainActivity2::class.java)
-            intent.putExtra("calculo", calculate)
-            intent.putExtra("medida", measure )
+
+
+            val intent = Intent(this, ResultActivity::class.java)
+            intent.putExtra("calculo", result)
+            intent.putExtra("medida",  measure)
             startActivity(intent)
 
         } else {
