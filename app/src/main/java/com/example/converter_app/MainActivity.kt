@@ -2,112 +2,140 @@ package com.example.converter_app
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
-import android.widget.*
+import android.os.PersistableBundle
+import android.util.Log
+import android.widget.ArrayAdapter
+import android.widget.Button
+import android.widget.EditText
+import android.widget.Spinner
 import androidx.appcompat.app.AppCompatActivity
-import com.example.converter_app.models.*
+import com.example.converter_app.models.CalculationStrategyHolder
+import com.example.converter_app.models.Calculator
+import com.example.converter_app.models.strategies.KilometerToMeterStrategy
+import com.example.converter_app.models.strategies.KilometersToCentimeters
+import com.example.converter_app.models.strategies.MeterToKilometerStrategy
+import com.example.converter_app.models.strategies.MetersToCentimeters
 
-class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, View.OnClickListener {
-    private lateinit var spinner: Spinner
-    private lateinit var edit: EditText
-    private lateinit var buttonConverter: Button
-    private lateinit var buttonLimpar: Button
+class MainActivity : AppCompatActivity() {
 
-    private var positionSelected = 0
-    private lateinit var conversorStrategy: ConversorDeMedidasStrategy
+    private lateinit var spConversios: Spinner
+    private lateinit var editValue: EditText
 
+    private val supportedCalculationStrategies = arrayOf(
+        CalculationStrategyHolder("Quilômetros para centímetros", KilometersToCentimeters()),
+        CalculationStrategyHolder("Quilômetros para metros", KilometerToMeterStrategy()),
+        CalculationStrategyHolder("Metros para centímetros", MetersToCentimeters()),
+        CalculationStrategyHolder("Metros para Quilômetros", MeterToKilometerStrategy())
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        spinner = findViewById(R.id.spinner)
-        edit = findViewById(R.id.editt_value)
-        buttonConverter = findViewById(R.id.button_converter)
-        buttonLimpar = findViewById(R.id.button_limpar)
+        var value = 0.0
+        var position = 0
 
-        ArrayAdapter.createFromResource(
-            this,
-            // Array de opções
-            R.array.option_to_converter,
-            // Layout de Spinner Padrão disponível no Android
-            android.R.layout.simple_spinner_item
-        ).also { adapter ->
-            // setando a visualização de dropDown
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            // setando o adapter ao Spinner
-            spinner.adapter = adapter
+        savedInstanceState?.let {
+            value = it.getDouble("VALUE")
+            position = it.getInt("POSITION")
         }
 
-        spinner.onItemSelectedListener = this
-        buttonConverter.setOnClickListener(this)
-        buttonLimpar.setOnClickListener(this)
+        initUI()
+
+        setUI(value, position)
+
+        setActions()
+
 
 
     }
 
-    override fun onItemSelected(adapter: AdapterView<*>?, view: View?, position: Int, p3: Long) {
-        val item = adapter?.selectedItem as String
-        positionSelected = position
-
-        when (item) {
-
-            Contantes.KM_PARA_METROS -> {
-                conversorStrategy = ConversorDeKmParaMetros()
-            }
-
-            Contantes.KM_POR_CENTIMETROS -> {
-                conversorStrategy = ConversorDeKmParaCentimetros()
-
-            }
-
-            Contantes.METROS_PARA_KM -> {
-                conversorStrategy = ConversorDeMetrosParaKM()
-            }
+    override fun onSaveInstanceState(outState: Bundle) {
+        try {
+            outState.putDouble("VALUE", editValue.text.toString().toDouble())
+        } catch (e: java.lang.NumberFormatException) {
+            editValue.error = "Valor inválido"
         }
+        outState.putInt("POSITION", spConversios.selectedItemPosition)
+
+
+        super.onSaveInstanceState(outState)
+
     }
 
-    override fun onNothingSelected(adapter: AdapterView<*>?) {}
 
-    override fun onClick(view: View) {
-        if (view.id == R.id.button_converter) {
+    private fun initUI() {
+        spConversios = findViewById(R.id.spinner)
+        editValue = findViewById(R.id.editt_value)
+    }
 
-            if(edit.text.toString().isEmpty()){
-                Toast.makeText(
-                    this,
-                    "Digite um valor válido!",
-                    Toast.LENGTH_LONG
-                ).show()
-                return
+    private fun setActions() {
+        val btnConvert: Button = findViewById(R.id.button_converter)
+        val btnLimpar: Button = findViewById(R.id.button_limpar)
 
+        btnConvert.setOnClickListener {
+
+            try {
+                //Getting values
+                val value = editValue.text.toString().toDouble()
+                val selectedItemPosition = spConversios.selectedItemPosition
+                val calculationStrategy =
+                    supportedCalculationStrategies[selectedItemPosition].strategy
+
+
+                //Setting and using the strategy
+                Calculator.setCalculationStrategy(calculationStrategy)
+                val calculateResult = Calculator.calculate(value)
+                val label = calculationStrategy.getResultLabel(calculateResult != 1.toDouble())
+
+                //Sending intent with display values
+                showResult(calculateResult, label)
+
+
+            } catch (error: java.lang.NumberFormatException) {
+                editValue.error = "Valor inválido"
+                editValue.requestFocus()
             }
 
-            if (positionSelected == 0) {
-                Toast.makeText(
-                    this,
-                    "Selecione uma das opções de conversão!",
-                    Toast.LENGTH_LONG
-                ).show()
-                return
-            }
-
-            //Lógica da conversão
-            val conversor = ConversorDeMedidas(conversorStrategy)
-            val textValue = edit.text.toString()
-            val result = conversor.converter(textValue.toDouble())
-            val measure = conversor.getLabel(result)
-
-
-
-            val intent = Intent(this, ResultActivity::class.java)
-            intent.putExtra("calculo", result)
-            intent.putExtra("medida",  measure)
-            startActivity(intent)
-
-        } else {
-            edit.setText("")
-            spinner.setSelection(0)
         }
+
+        btnLimpar.setOnClickListener {
+            editValue.setText("")
+            editValue.error = ""
+            spConversios.setSelection(0)
+        }
+
+
+    }
+
+    private fun showResult(calculateResult: Double, label: String) {
+        val intent = Intent(this, ResultActivity::class.java)
+        intent.putExtra("RESULT", calculateResult)
+        intent.putExtra("LABEL", label)
+        startActivity(intent)
+
+    }
+
+
+    private fun setUI(value: Double, position: Int) {
+
+        val spAdapter = ArrayAdapter(this, R.layout.res_spinner_item, getSpinnerData())
+        spAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spConversios.adapter = spAdapter
+
+        spConversios.setSelection(position)
+        editValue.setText(value.toString())
+
+    }
+
+    fun getSpinnerData(): MutableList<String> {
+        val spinnerData = mutableListOf<String>()
+        supportedCalculationStrategies.forEach { strategyHolder ->
+            spinnerData.add(
+                strategyHolder.name
+            )
+        }
+        return spinnerData
     }
 
 

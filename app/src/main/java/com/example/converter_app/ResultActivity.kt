@@ -1,28 +1,28 @@
 package com.example.converter_app
 
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 
 class ResultActivity : AppCompatActivity() {
-    private lateinit var textResult: TextView
-    private lateinit var textMeasure: TextView
-    private lateinit var buttonVoltar: Button
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_reuslt)
 
-        textResult = findViewById(R.id.text_result)
-        textMeasure = findViewById(R.id.text_medida)
-        buttonVoltar = findViewById(R.id.button_voltar)
+        val result = intent.getDoubleExtra("RESULT", 0.0)
+        var label = intent.getStringExtra("LABEL")
 
-        //Recebendo valor da intent
-        val calculate = intent.getDoubleExtra("calculo", 1.0)
+        val buttonVoltar: Button = findViewById(R.id.button_voltar)
 
-        textResult.text = calculate.toString()
-        textMeasure.text = intent.getStringExtra("medida")
+        val textResult: TextView = findViewById(R.id.text_result)
+        textResult.text = result.toString()
+
+        val textLabel: TextView = findViewById(R.id.text_medida)
+        textLabel.text = label.toString()
 
         buttonVoltar.setOnClickListener {
             finish()
