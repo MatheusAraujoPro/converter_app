@@ -1,0 +1,15 @@
+package com.example.converter_app.models
+
+object CONSTANTS{
+    const val DUMMY_PARAM_KILOMETER_TO_CENTIMETER = 100_000.0
+    const val DUMMY_RESULT_KILOMETER_TO_CENTIMETER = 1.0
+
+    const val DUMMY_PARAM_KILOMETER_TO_METER = 1.0
+    const val DUMMY_RESULT_KILOMETER_TO_METER = 1_000.0
+
+    const val DUMMY_PARAM_METER_TO_CENTIMETER = 1.0
+    const val DUMMY_RESULT_METER_TO_CENTIMETER = 1_00.0
+
+    const val DUMMY_PARAM_METER_TO_KILOMETER = 1.0
+    const val DUMMY_RESULT_METER_TO_KILOMETER = 0.001
+}
